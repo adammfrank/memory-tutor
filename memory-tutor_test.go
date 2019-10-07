@@ -67,6 +67,19 @@ func TestImportVocab(t *testing.T) {
 	}
 }
 
+func TestFindDevice(t *testing.T) {
+	file := "vocab-test-file.csv"
+
+	memories, _ := importVocab(file)
+
+	for _, memory := range memories {
+		if actualDevice := findDevice(memories, memory.EnglishWord); actualDevice != memory.Device {
+			expectationError(memory.Device, actualDevice, t)
+		}
+	}
+
+}
+
 func expectationError(expected string, actual string, t *testing.T) {
 	t.Errorf("expected %s but got %s", expected, actual)
 }
