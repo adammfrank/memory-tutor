@@ -17,7 +17,7 @@ import (
 
 func main() {
 
-	memories := importVocab()
+	memories, err := importVocab("vocab.csv")
 
 	words, err := recognize(os.Stdout, os.Args[1])
 	if err != nil {
@@ -81,16 +81,19 @@ type memory struct {
 	Device      string
 }
 
-func importVocab() []memory {
-	csvFile, _ := os.Open("vocab.csv")
+func importVocab(file string) ([]memory, error) {
+	csvFile, _ := os.Open(file)
 	reader := csv.NewReader(bufio.NewReader(csvFile))
+
+	// skip first line (column names)
+	reader.Read()
 	var memories []memory
 	for {
-		line, error := reader.Read()
-		if error == io.EOF {
+		line, err := reader.Read()
+		if err == io.EOF {
 			break
-		} else if error != nil {
-			log.Fatal(error)
+		} else if err != nil {
+			return nil, err
 		}
 		memories = append(memories, memory{
 			KhmerWord:   line[0],
@@ -99,7 +102,7 @@ func importVocab() []memory {
 		})
 	}
 
-	return memories
+	return memories, nil
 }
 
 func findDevice(memories []memory, englishWord string) string {
