@@ -7,15 +7,15 @@ import (
 	"testing"
 )
 
-func TestRecognize(t *testing.T) {
+func TestRecognizeFile(t *testing.T) {
 
 	buffer := new(bytes.Buffer)
 	file := "device-window.wav"
 
-	result, err := recognize(buffer, file)
+	result, err := recognizeFile(buffer, file)
 
 	if err != nil {
-		t.Fatalf("recognize gave error: %s", err)
+		t.Fatalf("recognizeFile gave error: %s", err)
 	}
 
 	expectedResult := []string{"device", "window"}

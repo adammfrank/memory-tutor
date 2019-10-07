@@ -18,11 +18,33 @@ import (
 func main() {
 
 	memories, err := importVocab("vocab.csv")
+	chk(err)
 
-	words, err := recognize(os.Stdout, os.Args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
+	words, err := recognizeFile(os.Stdout, os.Args[1])
+	chk(err)
+
+	// portaudio.Initialize()
+	// defer portaudio.Terminate()
+	// in := make([]int32, 64)
+	// stream, err := portaudio.OpenDefaultStream(1, 0, 44100, len(in), in)
+	// chk(err)
+	// defer stream.Close()
+
+	// chk(stream.Start())
+	// for {
+	// 	chk(stream.Read())
+	// 	chk(binary.Write(f, binary.BigEndian, in))
+	// 	nSamples += len(in)
+	// 	select {
+	// 	case <-sig:
+	// 		return
+	// 	default:
+	// 	}
+	// }
+	// chk(stream.Stop())
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	if words[0] == "device" {
 		device := findDevice(memories, words[1])
@@ -35,7 +57,7 @@ func main() {
 
 }
 
-func recognize(w io.Writer, file string) ([]string, error) {
+func recognizeFile(w io.Writer, file string) ([]string, error) {
 	ctx := context.Background()
 
 	client, err := speech.NewClient(ctx)
@@ -113,4 +135,10 @@ func findDevice(memories []memory, englishWord string) string {
 	}
 
 	return "No device found for " + englishWord
+}
+
+func chk(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
